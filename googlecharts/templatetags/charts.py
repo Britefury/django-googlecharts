@@ -1,12 +1,12 @@
 import sys
 import inspect
 import colorsys
+import collections
 
 from itertools import chain
 
 from django import template
 from django.conf import settings
-from django.utils.datastructures import SortedDict
 from django.utils.encoding import smart_str
 from django.utils.html import escape
 from django.utils.safestring import mark_safe, SafeData
@@ -138,10 +138,10 @@ class Chart(object):
     }
 
     def __init__(self):
-        # Use a SortedDict for the options so they are added in a
+        # Use a collections.OrderedDict for the options so they are added in a
         # deterministic manner; this eases things like dealing with cache keys 
         # or writing unit tests.
-        self.options = SortedDict()
+        self.options = collections.OrderedDict()
         self.datasets = []
         self.hidden_datasets = []
         self.axes = []
@@ -210,7 +210,7 @@ class Chart(object):
         
         # Calculate axis options
         if self.axes:
-            axis_options = SortedDict()
+            axis_options = collections.OrderedDict()
             axis_sides = []
             for i, axis in enumerate(self.axes):
                 axis_sides.append(axis.side)
@@ -546,7 +546,7 @@ def chart_auto_colors(color, item_label_list):
             c_final.append(c)
         colors.append(''.join(c_final))
 
-    final_color_map = SortedDict()
+    final_color_map = collections.OrderedDict()
 
     # Map our final color values to the label that will be associated with them
     for index, c in enumerate(colors):
@@ -824,7 +824,7 @@ class NoAxisNode(AxisNode):
 class Axis(object):
     def __init__(self, side):
         self.side = side
-        self.options = SortedDict()
+        self.options = collections.OrderedDict()
         
 # Axis options use %s placeholders for the axis index; this gets
 # filled in by Chart.url()
